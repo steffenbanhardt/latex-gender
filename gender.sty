@@ -1,0 +1,24 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{gender}
+\RequirePackage{ifthen}
+\RequirePackage{xkeyval}
+
+%---
+\newcounter{gender}%0 = f und m
+\define@key{family}{konj}[und]{#1}
+
+%\AtBeginDocument{\setkeys{family}{konj=oder}}
+
+%---
+
+\newcommand{\gender}[3][und]{% [oder]{female}{male}
+    \ifthenelse{\value{gender}=0}%
+	{#2 #1 #3\stepcounter{gender}}%
+	{#3 #1 #2\setcounter{gender}{0}}%
+    }
+\newcommand{\Gender}[3][und]{% [oder]{female}{male}
+    \ifthenelse{\value{gender}=0}%
+	{\MakeUppercase#2 #1 #3\stepcounter{gender}}%
+	{\MakeUppercase#3 #1 #2\setcounter{gender}{0}}%
+    }
+
