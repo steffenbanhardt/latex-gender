@@ -8,46 +8,29 @@
 %
 %
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{gender}[2012/08/27 V0.2 -- new syntax, colon as delimiter]
-%\RequirePackage{xkeyval} %unused
+\ProvidesPackage{gender}[2012/08/27 V0.2.5 -- one macro for all!]
 %
-%---
-%\ProcessOptions
-\newif\iffem\femtrue
-%\define@key{family}{konj}[und]{#1}
+\DeclareOption*{\def\gndr@konj{ODER}}%\CurrentOption}}
+\ProcessOptions\relax
 %
-%\AtBeginDocument{\setkeys{family}{konj=oder}}
+\newif\iffem\femtrue%female vorne
+\newif\ifuc\uctrue%uppercase 
 %
-\def\gndr@konj{und}
-%---
+\def\gender#1{\global\ucfalse\@gender#1\@nil}%
+\def\Gender#1{\global\uctrue\@gender#1\@nil}%
 %
-\def\gender#1{\@gender#1\@nil}%
-\def\@gender#1:#2:#3\@nil{%
+%
+\def\@gender#1(#2)#3\@nil{%
     \if\relax\detokenize{#2}\relax%
-    \def\gndr@ko{und}%\gndr@konj}%
+    \def\gndr@ko{\gndr@konj}%
     \else\def\gndr@ko{#2}%
     \fi%
     \iffem%
-	#1 \gndr@ko{} #3%
+	\ifuc\MakeUppercase#1 \else#1 \fi\gndr@ko{} #3%
 	\global\femfalse%
     \else%
-	#3 \gndr@ko{} #1%
+	\ifuc\MakeUppercase#3 \else#3 \fi\gndr@ko{} #1%
 	\global\femtrue%
     \fi%
-    }
-
-\def\Gender#1{\@Gender#1\@nil}%
-\def\@Gender#1:#2:#3\@nil{%
-    \if\relax\detokenize{#2}\relax%
-    \def\gndr@ko{und}%\gndr@konj}%
-    \else\def\gndr@ko{#2}%
-    \fi%
-    \iffem%
-	\MakeUppercase#1 \gndr@ko{} #3%
-	\global\femfalse%
-    \else%
-	\MakeUppercase#3 \gndr@ko{} #1%
-	\global\femtrue%
-    \fi%
-    }
+}
 
