@@ -8,7 +8,7 @@
 %
 %
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{gender}[2013/05/09 V0.5 Neue Option 'single', um immer nur eine Form zu nutzen]
+\ProvidesPackage{gender}[2013/10/18 V0.5.1 genderb -- es werden beide Formen genutzt, unabhängig von single]
 %
 \RequirePackage{xkeyval}
 %
@@ -44,11 +44,16 @@
 \def\Gender#1{\global\uctrue\ifGN@gndr@single\@gend#1\@nil\else\@gender#1\@nil\fi}%
 \def\gend#1{\global\ucfalse\@gend#1\@nil}%
 \def\Gend#1{\global\uctrue\@gend#1\@nil}%
+%Version mit b -- es werden immer beide Formen genommen, auch bei single=true
+\def\genderb#1{\global\ucfalse\@gender#1\@nil}%
+\def\Genderb#1{\global\uctrue\@gender#1\@nil}%
 %Versionen mit k -- die Form wird behalten
 \def\genderk#1{\keep\global\ucfalse\ifGN@gndr@single\@gend#1\@nil\else\@gender#1\@nil\fi}%
 \def\Genderk#1{\keep\global\uctrue\ifGN@gndr@single\@gend#1\@nil\else\@gender#1\@nil\fi}%
 \def\gendk#1{\keep\global\ucfalse\@gend#1\@nil}%
 \def\Gendk#1{\keep\global\uctrue\@gend#1\@nil}%
+\def\genderbk#1{\keep\global\ucfalse\@gender#1\@nil}%
+\def\Genderbk#1{\keep\global\uctrue\@gender#1\@nil}%
 %
 %
 \def\@gender#1(#2)#3\@nil{%
