@@ -8,7 +8,7 @@
 %
 %
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{gender}[2013/10/18 V0.5.1 genderb -- es werden beide Formen genutzt, unabhängig von single]
+\ProvidesPackage{gender}[2013/10/18 V0.6 -- malefirst als Option]
 %
 \RequirePackage{xkeyval}
 %
@@ -22,6 +22,11 @@
 %Setzt GN@gndr@single wenn es nicht aufgerufen wurde
 \presetkeys[GN]{gndr}{single=false}{}
 %
+\define@boolkey+[GN]{gndr}{malefirst}[true]%
+    {\PackageInfo{GENDER}{Setting boolean 'malefirst' to '#1'}}
+    {\PackageWarning{GENDER}{Value #1 for 'malefirst' ignored}}
+\presetkeys[GN]{gndr}{malefirst=false}{}
+%
 \DeclareOptionX*{\PackageWarning{GENDER}{Unknown Option '\CurrentOption'}}
 \ProcessOptionsX[GN]<gndr>\relax
 %
@@ -33,6 +38,7 @@
 %
 \newif\iffem\femtrue%female vorne
 \newif\ifuc\uctrue%uppercase
+\ifGN@gndr@malefirst\global\femfalse\fi
 %
     %%%\newcommand{\test}{%test}
     %%%Test auf single: \ifGN@gndr@single TRUE \else FALSE \fi \\
