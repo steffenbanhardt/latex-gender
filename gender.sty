@@ -1,4 +1,4 @@
-% Copyright 2012 by Steffen Banhardt <latex-gender@steffenbanhardt.de>
+% Copyright 2012, 2013 by Steffen Banhardt <latex-gender@steffenbanhardt.de>
 %
 % This work may be distributed and/or modified under the conditions of the LaTeX Project Public License, either version 1.3c of this license or (at your option) any later version. The latest version of this license is in
 %
@@ -8,22 +8,48 @@
 %
 %
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{gender}[2013/04/14 V0.3.1 --Großschreibung für Pronomen]
+\ProvidesPackage{gender}[2013/05/09 V0.5 Neue Option 'single', um immer nur eine Form zu nutzen]
 %
 \RequirePackage{xkeyval}
-\DeclareOptionX{konj}[und]{\def\gndr@konj{#1}}
 %
-\DeclareOptionX*{%
-	\PackageWarning{GENDER}{Unknown Option '\CurrentOption'}}
-\ProcessOptionsX\relax
+% Wird konj aufgerufen wird gndr@konj auf 'Wert', ansonsten auf 'und' gesetzt
+\DeclareOptionX[GN]<gndr>{konj}[und]{\def\gndr@konj{#1}\PackageInfo{GENDER}{Setting 'gndr@konj' to '#1'}}
 %
-\@ifundefined{gndr@konj}{\def\gndr@konj{und}}{\relax}%
+% Boolean 'single'
+\define@boolkey+[GN]{gndr}{single}[true]%
+    {\PackageInfo{GENDER}{Setting boolean 'single' to '#1'}}
+    {\PackageWarning{GENDER}{Value #1 for 'single' ignored}}
+%Setzt GN@gndr@single wenn es nicht aufgerufen wurde
+\presetkeys[GN]{gndr}{single=false}{}
+%
+\DeclareOptionX*{\PackageWarning{GENDER}{Unknown Option '\CurrentOption'}}
+\ProcessOptionsX[GN]<gndr>\relax
+%
+%-----------------------------
+%
+% Wurde konj nicht aufgerufen, wird es nun auf 'und' gesetzt
+\@ifundefined{gndr@konj}{\def\gndr@konj{und}\PackageInfo{GENDER}{Setting 'gndr@konj' to 'und'}}{\relax}%
+%
 %
 \newif\iffem\femtrue%female vorne
-\newif\ifuc\uctrue%uppercase 
+\newif\ifuc\uctrue%uppercase
 %
-\def\gender#1{\global\ucfalse\@gender#1\@nil}%
-\def\Gender#1{\global\uctrue\@gender#1\@nil}%
+    %%%\newcommand{\test}{%test}
+    %%%Test auf single: \ifGN@gndr@single TRUE \else FALSE \fi \\
+    %%%}
+%
+\def\keep{\iffem\global\femfalse\else\global\femtrue\fi}%
+%
+\def\gender#1{\global\ucfalse\ifGN@gndr@single\@gend#1\@nil\else\@gender#1\@nil\fi}%
+\def\Gender#1{\global\uctrue\ifGN@gndr@single\@gend#1\@nil\else\@gender#1\@nil\fi}%
+\def\gend#1{\global\ucfalse\@gend#1\@nil}%
+\def\Gend#1{\global\uctrue\@gend#1\@nil}%
+%Versionen mit k -- die Form wird behalten
+\def\genderk#1{\keep\global\ucfalse\ifGN@gndr@single\@gend#1\@nil\else\@gender#1\@nil\fi}%
+\def\Genderk#1{\keep\global\uctrue\ifGN@gndr@single\@gend#1\@nil\else\@gender#1\@nil\fi}%
+\def\gendk#1{\keep\global\ucfalse\@gend#1\@nil}%
+\def\Gendk#1{\keep\global\uctrue\@gend#1\@nil}%
+%
 %
 \def\@gender#1(#2)#3\@nil{%
     \if\relax\detokenize{#2}\relax%
@@ -39,6 +65,18 @@
     \fi%
 }
 %
+\def\@gend#1(#2)#3\@nil{%
+    \iffem%
+	\ifuc\MakeUppercase#1\else#1\fi%
+	\global\femfalse%
+    \else%
+	\ifuc\MakeUppercase#3\else#3\fi%
+	\global\femtrue%
+    \fi%
+}
+%
+% Weitere Formen
+% Dürfen nicht die @Versionen aufrufen!
 \newcommand{\gnd}[2][\gndr@konj]{\gender{#2in(#1)#2}} %Kurzbefehl \gnd[konj]{neutr. Form}
 \newcommand{\gndpl}[2][\gndr@konj]{\gender{#2innen(#1)#2}} %Kurzbefehl \gndpl[konj]{neutr. Form}
 %
@@ -47,6 +85,8 @@
 \newcommand{\ersie}{\sieer}
 \newcommand{\ihrsein}[1][\gndr@konj]{\gender{ihr(#1)sein}}
 \newcommand{\seinihr}{\ihrsein}
+\newcommand{\ihreseine}[1][\gndr@konj]{\gender{ihre(#1)seine}}
+\newcommand{\seineihre}{\ihreseine}
 \newcommand{\ihrihm}[1][\gndr@konj]{\gender{ihr(#1)ihm}}
 \newcommand{\ihmihr}{\ihrihm}
 \newcommand{\sieihn}[1][\gndr@konj]{\gender{sie(#1)ihn}}
@@ -56,6 +96,8 @@
 \newcommand{\Ersie}{\Sieer}
 \newcommand{\Ihrsein}[1][\gndr@konj]{\Gender{ihr(#1)sein}}
 \newcommand{\Seinihr}{\Ihrsein}
+\newcommand{\Ihreseine}[1][\gndr@konj]{\Gender{ihre(#1)seine}}
+\newcommand{\Seineihre}{\Ihreseine}
 \newcommand{\Ihrihm}[1][\gndr@konj]{\Gender{ihr(#1)ihm}}
 \newcommand{\Ihmihr}{\Ihrihm}
 \newcommand{\Sieihn}[1][\gndr@konj]{\Gender{sie(#1)ihn}}
