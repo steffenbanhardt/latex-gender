@@ -8,7 +8,7 @@
 %
 %
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{gender}[2013/10/18 V0.6 -- malefirst als Option]
+\ProvidesPackage{gender}[2013/11/05 V0.7 -- genderfix mit Option fixmale]
 %
 \RequirePackage{xkeyval}
 %
@@ -27,6 +27,11 @@
     {\PackageWarning{GENDER}{Value #1 for 'malefirst' ignored}}
 \presetkeys[GN]{gndr}{malefirst=false}{}
 %
+\define@boolkey+[GN]{gndr}{fixmale}[true]%
+    {\PackageInfo{GENDER}{Setting boolean 'fixmale' to '#1'}}
+    {\PackageWarning{GENDER}{Value #1 for 'fixmale' ignored}}
+\presetkeys[GN]{gndr}{fixmale=true}{}
+%
 \DeclareOptionX*{\PackageWarning{GENDER}{Unknown Option '\CurrentOption'}}
 \ProcessOptionsX[GN]<gndr>\relax
 %
@@ -38,11 +43,9 @@
 %
 \newif\iffem\femtrue%female vorne
 \newif\ifuc\uctrue%uppercase
+\newif\iffixmale\fixmalefalse
 \ifGN@gndr@malefirst\global\femfalse\fi
-%
-    %%%\newcommand{\test}{%test}
-    %%%Test auf single: \ifGN@gndr@single TRUE \else FALSE \fi \\
-    %%%}
+\ifGN@gndr@fixmale\global\fixmaletrue\fi
 %
 \def\keep{\iffem\global\femfalse\else\global\femtrue\fi}%
 %
@@ -61,6 +64,8 @@
 \def\genderbk#1{\keep\global\ucfalse\@gender#1\@nil}%
 \def\Genderbk#1{\keep\global\uctrue\@gender#1\@nil}%
 %
+\def\genderfix#1{\global\ucfalse\@genderfix#1\@nil}%
+\def\Genderfix#1{\global\uctrue\@genderfix#1\@nil}%
 %
 \def\@gender#1(#2)#3\@nil{%
     \if\relax\detokenize{#2}\relax%
@@ -83,6 +88,14 @@
     \else%
 	\ifuc\MakeUppercase#3\else#3\fi%
 	\global\femtrue%
+    \fi%
+}
+%
+\def\@genderfix#1(#2)#3\@nil{%
+    \iffixmale%
+	\ifuc\MakeUppercase#3\else#3\fi%
+    \else%
+	\ifuc\MakeUppercase#1\else#1\fi%
     \fi%
 }
 %
